@@ -22,6 +22,7 @@ import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.bluetooth.le.ScanCallback
+import android.bluetooth.le.ScanFilter
 import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
 import android.content.Context
@@ -29,6 +30,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.ParcelUuid
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -59,6 +62,13 @@ class MainActivity : AppCompatActivity() {
     private val bleScanner by lazy {
         bluetoothAdapter.bluetoothLeScanner
     }
+
+    //Filter for Custom Devices
+    private val scanFilterList = mutableListOf<ScanFilter>()
+    private val scanFilters = ScanFilter.Builder().setServiceUuid(
+        ParcelUuid.fromString("966499db-e864-4b73-bbda-95e6bac02da0"),
+        ParcelUuid.fromString("11111111-1111-1111-1111-111111111111")
+    ).build()
 
     private val scanSettings = ScanSettings.Builder()
         .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
@@ -153,7 +163,8 @@ class MainActivity : AppCompatActivity() {
         } else {
             scanResults.clear()
             scanResultAdapter.notifyDataSetChanged()
-            bleScanner.startScan(null, scanSettings, scanCallback)
+            scanFilterList.add(scanFilters)
+            bleScanner.startScan(scanFilterList, scanSettings, scanCallback)
             isScanning = true
         }
     }
@@ -227,7 +238,7 @@ class MainActivity : AppCompatActivity() {
     private val connectionEventListener by lazy {
         ConnectionEventListener().apply {
             onConnectionSetupComplete = { gatt ->
-                Intent(this@MainActivity, BleOperationsActivity::class.java).also {
+                Intent(this@MainActivity, BleOperationsActivity2::class.java).also {
                     it.putExtra(BluetoothDevice.EXTRA_DEVICE, gatt.device)
                     startActivity(it)
                 }

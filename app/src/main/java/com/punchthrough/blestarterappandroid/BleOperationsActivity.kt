@@ -93,7 +93,8 @@ class BleOperationsActivity : AppCompatActivity() {
             setDisplayShowTitleEnabled(true)
             title = getString(R.string.ble_playground)
         }
-        setupRecyclerView()
+       // setupRecyclerView()
+        /*
         request_mtu_button.setOnClickListener {
             if (mtu_field.text.isNotEmpty() && mtu_field.text.isNotBlank()) {
                 mtu_field.text.toString().toIntOrNull()?.let { mtu ->
@@ -105,6 +106,8 @@ class BleOperationsActivity : AppCompatActivity() {
             }
             hideKeyboard()
         }
+        */
+
     }
 
     override fun onDestroy() {
