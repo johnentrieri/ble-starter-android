@@ -43,6 +43,7 @@ import kotlinx.android.synthetic.main.activity_ble_operations.characteristics_re
 import kotlinx.android.synthetic.main.activity_ble_operations.log_scroll_view
 import kotlinx.android.synthetic.main.activity_ble_operations.log_text_view
 import kotlinx.android.synthetic.main.activity_ble_operations_2.liquidLevelText
+import kotlinx.android.synthetic.main.activity_ble_operations_2.liquidLevelImg
 import kotlinx.android.synthetic.main.row_scan_result.view.mac_address
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.noButton
@@ -114,7 +115,25 @@ class BleOperationsActivity2 : AppCompatActivity() {
             onCharacteristicChanged = { _, characteristic ->
                 Timber.i("Value changed on ${characteristic.uuid}: ${characteristic.value.toHexString()}")
                 runOnUiThread {
-                    liquidLevelText.text = "${Integer.decode(characteristic.value.toHexString())}"
+                    val liquidLevelInt = Integer.decode(characteristic.value.toHexString())
+                    liquidLevelText.text = "$liquidLevelInt"
+
+                    val waterLevelDrawable = when (liquidLevelInt) {
+                        in 0..9 -> R.drawable.water_0
+                        in 10..19 -> R.drawable.water_1
+                        in 20..29 -> R.drawable.water_2
+                        in 30..39 -> R.drawable.water_3
+                        in 40..49 -> R.drawable.water_4
+                        in 50..59 -> R.drawable.water_5
+                        in 60..69 -> R.drawable.water_6
+                        in 70..79 -> R.drawable.water_7
+                        in 80..89 -> R.drawable.water_8
+                        in 90..99 -> R.drawable.water_9
+                        100 -> R.drawable.water_10
+                        else -> R.drawable.water_0
+                    }
+
+                    liquidLevelImg.setImageResource(waterLevelDrawable)
                 }
             }
 
